@@ -16,6 +16,7 @@ db = SQLAlchemy(app)
 
 
 class Expression(db.Model):
+    __tablename__ = 'expression'
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(200))
     value = db.Column(db.Numeric)
