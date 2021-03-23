@@ -7,16 +7,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:10.8
-        env:
-          POSTGRES_USER: cs162_user
-          POSTGRES_PASSWORD: cs162_password
-          POSTGRES_DB: cs162
-        ports:
-          - 5432:5432
-
     steps:
     - uses: actions/checkout@v2
 
@@ -33,12 +23,13 @@ jobs:
       run: python -c "import sys; print(sys.version)"
 
     - name: psycopg2 prerequisites
-      run: sudo apt-get install libpq-dev
+      run: sudo apt install libpq-dev
 
     - name: Build docker image
       run: |
         docker build -t cs162-flask:latest web
         docker network create -d bridge cs162-bridge-network
+        docker run --name=db --network=cs162-bridge-network -d --expose 5432 -p 5432:5432/tcp  -e "POSTGRES_DB=cs162" -e "POSTGRES_USER=cs162_user" -e "POSTGRES_PASSWORD=cs162_password" postgres:alpine
         docker run --name=cs162-instance --network=cs162-bridge-network -d --expose 5000 -p 5000:5000/tcp cs162-flask
 
     - name: Install dependencies
