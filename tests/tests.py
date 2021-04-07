@@ -1,5 +1,4 @@
-
-# professor example
+# from CS162 13.1
 
 import random
 import requests
